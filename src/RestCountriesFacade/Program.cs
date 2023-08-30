@@ -32,7 +32,7 @@ namespace RestCountriesFacade
 			builder.Services.AddHttpClient<RestCountriesClient>((serviceProvider, httpClient) =>
 			{
 				var inventoryOptions = serviceProvider.GetRequiredService<IOptions<RestCountriesClientSettings>>().Value;
-				httpClient.BaseAddress = new Uri(inventoryOptions?.BaseAddress ?? "https://restcountries.com/");
+				httpClient.BaseAddress = new Uri(inventoryOptions?.BaseAddress ?? string.Empty);
 				httpClient.Timeout = TimeSpan.FromSeconds(inventoryOptions?.RequestTimeoutSec ?? 5);
 			});
 
