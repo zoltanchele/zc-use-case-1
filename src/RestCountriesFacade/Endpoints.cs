@@ -17,7 +17,8 @@ namespace RestCountriesFacade
 				var countries = await client.GetAll();
 				return countries?
 					.FilterByCommonName(filter)
-					.FilterByMaxPopulation(populationMillions);
+					.FilterByMaxPopulation(populationMillions)
+					.SortByCommonName(sort);
 			})
 			.WithName("Retrieve");
 		}

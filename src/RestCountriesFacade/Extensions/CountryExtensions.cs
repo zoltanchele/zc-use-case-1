@@ -1,5 +1,5 @@
-﻿using RestCountriesFacade.Models;
-using System.Collections.Specialized;
+﻿using RestCountriesFacade.Constants;
+using RestCountriesFacade.Models;
 
 namespace RestCountriesFacade.Extensions
 {
@@ -21,6 +21,17 @@ namespace RestCountriesFacade.Extensions
 			return countries.Where(e => e.Population < maxPopulationMillions * 1000000);
 		}
 
+		public static IEnumerable<Country> SortByCommonName(this IEnumerable<Country> countries, string? sortDirection)
+		{
+			if(sortDirection == null)
+				return countries;
 
+			if(sortDirection == SortDirection.Ascend)
+				return countries.OrderBy(e => e.Name?.Common);
+			if(sortDirection == SortDirection.Descend)
+				return countries.OrderByDescending(e => e.Name?.Common);
+
+			return countries;
+		}
 	}
 }
