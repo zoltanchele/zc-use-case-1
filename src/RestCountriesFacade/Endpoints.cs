@@ -1,4 +1,5 @@
 ﻿using RestCountriesFacade.Clients;
+using RestCountriesFacade.Extensions;
 
 namespace RestCountriesFacade
 {
@@ -14,7 +15,8 @@ namespace RestCountriesFacade
 				RestCountriesClient client) =>
 			{
 				var countries = await client.GetAll();
-				return countries;
+				return countries?
+					.FilterByCommonName(filter);
 			})
 			.WithName("Retrieve");
 		}
