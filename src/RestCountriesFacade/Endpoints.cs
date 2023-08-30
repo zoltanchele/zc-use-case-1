@@ -9,14 +9,15 @@ namespace RestCountriesFacade
 		{
 			app.MapGet("/retrieve", async ( 
 				string? filter, 
-				int? population, 
+				int? populationMillions, 
 				string? sort, 
 				int? take,
 				RestCountriesClient client) =>
 			{
 				var countries = await client.GetAll();
 				return countries?
-					.FilterByCommonName(filter);
+					.FilterByCommonName(filter)
+					.FilterByMaxPopulation(populationMillions);
 			})
 			.WithName("Retrieve");
 		}
