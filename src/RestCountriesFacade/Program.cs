@@ -1,3 +1,9 @@
+using Microsoft.AspNetCore.Http.Json;
+using Microsoft.Extensions.Options;
+using RestCountriesFacade.Clients;
+using RestCountriesFacade.Configuration;
+using System.Text.Json.Serialization;
+
 namespace RestCountriesFacade
 {
 	public class Program
@@ -13,6 +19,23 @@ namespace RestCountriesFacade
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();
 
+			builder.Services.AddOptions<RestCountriesClientSettings>()
+				.BindConfiguration(RestCountriesClientSettings.ConfigurationSection)
+				.ValidateDataAnnotations()
+				.ValidateOnStart();
+
+			builder.Services.Configure<JsonOptions>(options =>
+			{
+				options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+			});
+			
+			builder.Services.AddHttpClient<RestCountriesClient>((serviceProvider, httpClient) =>
+			{
+				var inventoryOptions = serviceProvider.GetRequiredService<IOptions<RestCountriesClientSettings>>().Value;
+				httpClient.BaseAddress = new Uri(inventoryOptions?.BaseAddress ?? "https://restcountries.com/");
+				httpClient.Timeout = TimeSpan.FromSeconds(inventoryOptions?.RequestTimeoutSec ?? 5);
+			});
+
 			var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
@@ -26,11 +49,7 @@ namespace RestCountriesFacade
 
 			app.UseAuthorization();
 
-			app.MapGet("/test", (HttpContext httpContext) =>
-			{
-				return new Test();
-			})
-			.WithName("Test");
+			app.MapEndpoints();
 
 			app.Run();
 		}
