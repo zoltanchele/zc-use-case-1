@@ -13,7 +13,7 @@ namespace RestCountriesFacade.Extensions
 			return countries.Where(e => e.Name?.Common?.Contains(filterExpression, StringComparison.OrdinalIgnoreCase) ?? false);
 		}
 
-		public static IEnumerable<Country> FilterByMaxPopulation(this IEnumerable<Country> countries, int? maxPopulationMillions)
+		public static IEnumerable<Country> FilterByMaxPopulation(this IEnumerable<Country> countries, decimal? maxPopulationMillions)
 		{
 			if (maxPopulationMillions == null) 
 				return countries;

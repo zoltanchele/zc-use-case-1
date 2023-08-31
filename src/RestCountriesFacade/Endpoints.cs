@@ -9,7 +9,7 @@ namespace RestCountriesFacade
 		{
 			app.MapGet("/retrieve", async ( 
 				string? filter, 
-				int? populationMillions, 
+				decimal? populationMillions, 
 				string? sort, 
 				int? take,
 				RestCountriesClient client) =>
