@@ -42,7 +42,13 @@ namespace RestCountriesFacade
 			if (app.Environment.IsDevelopment())
 			{
 				app.UseSwagger();
-				app.UseSwaggerUI();
+				app.UseSwaggerUI(options =>
+				{
+					options.ConfigObject.AdditionalItems.Add(
+						"syntaxHighlight", new Dictionary<string, object>{
+							["activated"] = false
+						});
+				});
 			}
 
 			app.UseHttpsRedirection();
