@@ -6,32 +6,48 @@ namespace RestCountriesFacade.Tests.Extensions
 {
 	public class CountryCollectionExtensionsShould
 	{
+		private readonly Country[] _countries;
+
+		public CountryCollectionExtensionsShould()
+		{
+			_countries = new[]
+			{
+				new Country{ Name = new CountryName { Common = "Albania" }, Population = 2837743 },
+				new Country{ Name = new CountryName { Common = "Bangladesh" }, Population = 164689383 },
+				new Country{ Name = new CountryName { Common = "Ivory Coast" }, Population = 26378275 },
+				new Country{ Name = new CountryName { Common = "Croatia" }, Population = 4047200 },
+				new Country{ Name = new CountryName { Common = "Estonia" }, Population = 1331057 }
+			};
+		}
+
 		[Fact]
 		public void FilterByCommonNameCaseInsensitively()
 		{
 			// arrange
+			var filterExpression = "sT";
+			var firstCountry = "Ivory Coast";
+			var secondCountry = "Estonia";
 			var expectedLength = 2;
-			var input = GetCountries();
 
 			// act
-			var result = input.FilterByCommonName("sT");
+			var result = _countries.FilterByCommonName(filterExpression);
 
 			// assert
 			Assert.NotNull(result);
 			Assert.NotEmpty(result);
 			Assert.Equal(expectedLength, result.Count());
-			Assert.True(result.ElementAt(0).Name?.Common == "Ivory Coast");
-			Assert.True(result.ElementAt(1).Name?.Common == "Estonia");
+			Assert.True(result.ElementAt(0).Name?.Common == firstCountry);
+			Assert.True(result.ElementAt(1).Name?.Common == secondCountry);
 		}
 
 		[Fact]
 		public void FilterByCommonNameAndReturnEmptyCollectionIfNotFound()
 		{
 			// arrange
-			var input = GetCountries();
+			var filterExpression = "bin";
 
 			// act
-			var result = input.FilterByCommonName("bin");
+			var result = _countries.FilterByCommonName(filterExpression);
 
 			// assert
 			Assert.NotNull(result);
@@ -42,11 +58,10 @@ namespace RestCountriesFacade.Tests.Extensions
 		public void FilterByCommonNameAndReturnAllIfFilterExpressionIsNull()
 		{
 			// arrange
-			var input = GetCountries();
-			var expectedLength = input.Length;
+			var expectedLength = _countries.Length;
 
 			// act
-			var result = input.FilterByCommonName(null);
+			var result = _countries.FilterByCommonName(null);
 
 			// assert
 			Assert.NotNull(result);
@@ -58,13 +73,12 @@ namespace RestCountriesFacade.Tests.Extensions
 		public void FilterByPopulation()
 		{
 			// arrange
-			var input = GetCountries();
 			var expectedLength = 1;
 			var millionPeople = 2;
 			var expectedName = "Estonia";
 
 			// act
-			var result = input.FilterByMaxPopulation(millionPeople);
+			var result = _countries.FilterByMaxPopulation(millionPeople);
 
 			// assert
 			Assert.NotNull(result);
@@ -77,11 +91,10 @@ namespace RestCountriesFacade.Tests.Extensions
 		public void FilterByPopulationAndReturnAllIfCriteriaIsNull()
 		{
 			// arrange
-			var input = GetCountries();
-			var expectedLength = input.Length;
+			var expectedLength = _countries.Length;
 
 			// act
-			var result = input.FilterByMaxPopulation(null);
+			var result = _countries.FilterByMaxPopulation(null);
 
 			// assert
 			Assert.NotNull(result);
@@ -93,143 +106,142 @@ namespace RestCountriesFacade.Tests.Extensions
 		public void SortAscending()
 		{
 			// arrange
-			var input = GetCountries();
-			var expectedLength = input.Length;
+			var expectedLength = _countries.Length;
+			var firstCountry = "Albania";
+			var thirdCountry = "Croatia";
+			var lastCountry = "Ivory Coast";
 
 			// act
-			var result = input.SortByCommonName(SortDirection.Ascend);
+			var result = _countries.SortByCommonName(SortDirection.Ascend);
 
 			// assert
 			Assert.NotNull(result);
 			Assert.NotEmpty(result);
 			Assert.Equal(expectedLength, result.Count());
-			Assert.True(result.ElementAt(0).Name?.Common == "Albania");
-			Assert.True(result.ElementAt(2).Name?.Common == "Croatia");
-			Assert.True(result.ElementAt(input.Length - 1).Name?.Common == "Ivory Coast");
+			Assert.True(result.ElementAt(0).Name?.Common == firstCountry);
+			Assert.True(result.ElementAt(2).Name?.Common == thirdCountry);
+			Assert.True(result.ElementAt(expectedLength - 1).Name?.Common == lastCountry);
 		}
 
 		[Fact]
 		public void SortDescending()
 		{
 			// arrange
-			var input = GetCountries();
-			var expectedLength = input.Length;
+			var expectedLength = _countries.Length;
+			var firstCountry = "Ivory Coast";
+			var thirdCountry = "Croatia";
+			var lastCountry = "Albania";
 
 			// act
-			var result = input.SortByCommonName(SortDirection.Descend);
+			var result = _countries.SortByCommonName(SortDirection.Descend);
 
 			// assert
 			Assert.NotNull(result);
 			Assert.NotEmpty(result);
 			Assert.Equal(expectedLength, result.Count());
-			Assert.True(result.ElementAt(0).Name?.Common == "Ivory Coast");
-			Assert.True(result.ElementAt(2).Name?.Common == "Croatia");
-			Assert.True(result.ElementAt(input.Length - 1).Name?.Common == "Albania");
+			Assert.True(result.ElementAt(0).Name?.Common == firstCountry);
+			Assert.True(result.ElementAt(2).Name?.Common == thirdCountry);
+			Assert.True(result.ElementAt(expectedLength - 1).Name?.Common == lastCountry);
 		}
 
 		[Fact]
 		public void NotSortWhenSortExpressionIsInvalid()
 		{
 			// arrange
-			var input = GetCountries();
-			var expectedLength = input.Length;
+			var expectedLength = _countries.Length;
+			var firstCountry = "Albania";
+			var thirdCountry = "Ivory Coast";
+			var lastCountry = "Estonia";
 
 			// act
-			var result = input.SortByCommonName("Anything");
+			var result = _countries.SortByCommonName("Anything");
 
 			// assert
 			Assert.NotNull(result);
 			Assert.NotEmpty(result);
 			Assert.Equal(expectedLength, result.Count());
-			Assert.True(result.ElementAt(0).Name?.Common == "Albania");
-			Assert.True(result.ElementAt(2).Name?.Common == "Ivory Coast");
-			Assert.True(result.ElementAt(input.Length - 1).Name?.Common == "Estonia");
+			Assert.True(result.ElementAt(0).Name?.Common == firstCountry);
+			Assert.True(result.ElementAt(2).Name?.Common == thirdCountry);
+			Assert.True(result.ElementAt(expectedLength - 1).Name?.Common == lastCountry);
 		}
 
 		[Fact]
 		public void NotSortWhenSortExpressionIsNull()
 		{
 			// arrange
-			var input = GetCountries();
-			var expectedLength = input.Length;
+			var expectedLength = _countries.Length;
+			var firstCountry = "Albania";
+			var thirdCountry = "Ivory Coast";
+			var lastCountry = "Estonia";
 
 			// act
-			var result = input.SortByCommonName(null);
+			var result = _countries.SortByCommonName(null);
 
 			// assert
 			Assert.NotNull(result);
 			Assert.NotEmpty(result);
 			Assert.Equal(expectedLength, result.Count());
-			Assert.True(result.ElementAt(0).Name?.Common == "Albania");
-			Assert.True(result.ElementAt(2).Name?.Common == "Ivory Coast");
-			Assert.True(result.ElementAt(input.Length - 1).Name?.Common == "Estonia");
+			Assert.True(result.ElementAt(0).Name?.Common == firstCountry);
+			Assert.True(result.ElementAt(2).Name?.Common == thirdCountry);
+			Assert.True(result.ElementAt(expectedLength - 1).Name?.Common == lastCountry);
 		}
 
 		[Fact]
 		public void LimitResultLength()
 		{
 			// arrange
-			var input = GetCountries();
-			var expectedLength = input.Length - 2;
+			var expectedLength = _countries.Length - 2;
+			var firstCountry = "Albania";
+			var lastCountry = "Ivory Coast";
 
 			// act
-			var result = input.TakeFirst(expectedLength);
+			var result = _countries.TakeFirst(expectedLength);
 
 			// assert
 			Assert.NotNull(result);
 			Assert.NotEmpty(result);
 			Assert.Equal(expectedLength, result.Count());
-			Assert.True(result.ElementAt(0).Name?.Common == "Albania");
-			Assert.True(result.ElementAt(expectedLength - 1).Name?.Common == "Ivory Coast");
+			Assert.True(result.ElementAt(0).Name?.Common == firstCountry);
+			Assert.True(result.ElementAt(expectedLength - 1).Name?.Common == lastCountry);
 		}
 
 		[Fact]
 		public void NotLimitResultLengthIfDesiredLengthIsLonger()
 		{
 			// arrange
-			var input = GetCountries();
-			var expectedLength = input.Length;
+			var expectedLength = _countries.Length;
 			var desiredLength = expectedLength + 5;
+			var firstCountry = "Albania";
+			var lastCountry = "Estonia";
 
 			// act
-			var result = input.TakeFirst(desiredLength);
+			var result = _countries.TakeFirst(desiredLength);
 
 			// assert
 			Assert.NotNull(result);
 			Assert.NotEmpty(result);
 			Assert.Equal(expectedLength, result.Count());
-			Assert.True(result.ElementAt(0).Name?.Common == "Albania");
-			Assert.True(result.ElementAt(expectedLength - 1).Name?.Common == "Estonia");
+			Assert.True(result.ElementAt(0).Name?.Common == firstCountry);
+			Assert.True(result.ElementAt(expectedLength - 1).Name?.Common == lastCountry);
 		}
 
 		[Fact]
 		public void NotLimitResultLengthIfDesiredLengthIsNull()
 		{
 			// arrange
-			var input = GetCountries();
-			var expectedLength = input.Length;
+			var expectedLength = _countries.Length;
+			var firstCountry = "Albania";
+			var lastCountry = "Estonia";
 
 			// act
-			var result = input.TakeFirst(null);
+			var result = _countries.TakeFirst(null);
 
 			// assert
 			Assert.NotNull(result);
 			Assert.NotEmpty(result);
 			Assert.Equal(expectedLength, result.Count());
-			Assert.True(result.ElementAt(0).Name?.Common == "Albania");
-			Assert.True(result.ElementAt(expectedLength - 1).Name?.Common == "Estonia");
-		}
-
-		private Country[] GetCountries()
-		{
-			return new[]
-			{
-				new Country{ Name = new CountryName { Common = "Albania" }, Population = 2837743 },
-				new Country{ Name = new CountryName { Common = "Bangladesh" }, Population = 164689383 },
-				new Country{ Name = new CountryName { Common = "Ivory Coast" }, Population = 26378275 },
-				new Country{ Name = new CountryName { Common = "Croatia" }, Population = 4047200 },
-				new Country{ Name = new CountryName { Common = "Estonia" }, Population = 1331057 }
-			};
+			Assert.True(result.ElementAt(0).Name?.Common == firstCountry);
+			Assert.True(result.ElementAt(expectedLength - 1).Name?.Common == lastCountry);
 		}
 	}
 }
