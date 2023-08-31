@@ -33,5 +33,13 @@ namespace RestCountriesFacade.Extensions
 
 			return countries;
 		}
+
+		public static IEnumerable<Country> TakeFirst(this IEnumerable<Country> countries, int? take) 
+		{
+			if(take == null) 
+				return countries;
+
+			return countries.Take(take.Value);
+		}
 	}
 }

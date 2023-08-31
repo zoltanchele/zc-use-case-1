@@ -18,7 +18,8 @@ namespace RestCountriesFacade
 				return countries?
 					.FilterByCommonName(filter)
 					.FilterByMaxPopulation(populationMillions)
-					.SortByCommonName(sort);
+					.SortByCommonName(sort)
+					.TakeFirst(take);
 			})
 			.WithName("Retrieve");
 		}
