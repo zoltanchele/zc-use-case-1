@@ -3,7 +3,7 @@ using RestCountriesFacade.Models;
 
 namespace RestCountriesFacade.Extensions
 {
-	public static class CountryArrayFilterExtension
+	public static class CountryCollectionExtensions
 	{
 		public static IEnumerable<Country> FilterByCommonName(this IEnumerable<Country> countries, string? filterExpression)
 		{
